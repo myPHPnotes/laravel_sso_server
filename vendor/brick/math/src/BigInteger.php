@@ -26,10 +26,8 @@ final class BigInteger extends BigNumber
      *
      * No leading zeros must be present.
      * No leading minus sign must be present if the number is zero.
-     *
-     * @var string
      */
-    private $value;
+    private string $value;
 
     /**
      * Protected constructor. Use a factory method to obtain an instance.
@@ -359,6 +357,21 @@ final class BigInteger extends BigNumber
         }
 
         return $ten;
+    }
+
+    public static function gcdMultiple(BigInteger $a, BigInteger ...$n): BigInteger
+    {
+        $result = $a;
+
+        foreach ($n as $next) {
+            $result = $result->gcd($next);
+
+            if ($result->isEqualTo(1)) {
+                return $result;
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -1114,6 +1127,39 @@ final class BigInteger extends BigNumber
     public function __toString() : string
     {
         return $this->value;
+    }
+
+    /**
+     * This method is required for serializing the object and SHOULD NOT be accessed directly.
+     *
+     * @internal
+     *
+     * @return array{value: string}
+     */
+    public function __serialize(): array
+    {
+        return ['value' => $this->value];
+    }
+
+    /**
+     * This method is only here to allow unserializing the object and cannot be accessed directly.
+     *
+     * @internal
+     * @psalm-suppress RedundantPropertyInitializationCheck
+     *
+     * @param array{value: string} $data
+     *
+     * @return void
+     *
+     * @throws \LogicException
+     */
+    public function __unserialize(array $data): void
+    {
+        if (isset($this->value)) {
+            throw new \LogicException('__unserialize() is an internal function, it must not be called directly.');
+        }
+
+        $this->value = $data['value'];
     }
 
     /**

@@ -22,19 +22,15 @@ final class BigDecimal extends BigNumber
      * This is a string of digits with an optional leading minus sign.
      * No leading zero must be present.
      * No leading minus sign must be present if the value is 0.
-     *
-     * @var string
      */
-    private $value;
+    private string $value;
 
     /**
      * The scale (number of digits after the decimal point) of this decimal number.
      *
      * This must be zero or more.
-     *
-     * @var int
      */
-    private $scale;
+    private int $scale;
 
     /**
      * Protected constructor. Use a factory method to obtain an instance.
@@ -753,6 +749,40 @@ final class BigDecimal extends BigNumber
     }
 
     /**
+     * This method is required for serializing the object and SHOULD NOT be accessed directly.
+     *
+     * @internal
+     *
+     * @return array{value: string, scale: int}
+     */
+    public function __serialize(): array
+    {
+        return ['value' => $this->value, 'scale' => $this->scale];
+    }
+
+    /**
+     * This method is only here to allow unserializing the object and cannot be accessed directly.
+     *
+     * @internal
+     * @psalm-suppress RedundantPropertyInitializationCheck
+     *
+     * @param array{value: string, scale: int} $data
+     *
+     * @return void
+     *
+     * @throws \LogicException
+     */
+    public function __unserialize(array $data): void
+    {
+        if (isset($this->value)) {
+            throw new \LogicException('__unserialize() is an internal function, it must not be called directly.');
+        }
+
+        $this->value = $data['value'];
+        $this->scale = $data['scale'];
+    }
+
+    /**
      * This method is required by interface Serializable and SHOULD NOT be accessed directly.
      *
      * @internal
@@ -794,7 +824,7 @@ final class BigDecimal extends BigNumber
      * @param BigDecimal $x The first decimal number.
      * @param BigDecimal $y The second decimal number.
      *
-     * @return array{0: string, 1: string} The scaled integer values of $x and $y.
+     * @return array{string, string} The scaled integer values of $x and $y.
      */
     private function scaleValues(BigDecimal $x, BigDecimal $y) : array
     {

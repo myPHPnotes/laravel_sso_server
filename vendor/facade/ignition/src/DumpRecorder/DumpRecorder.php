@@ -87,7 +87,7 @@ class DumpRecorder
     protected function getDefaultHandler()
     {
         return function ($value) {
-            $data = (new VarCloner)->cloneVar($value);
+            $data = (new VarCloner())->cloneVar($value);
 
             $this->getDumper()->dump($data);
         };
@@ -103,7 +103,7 @@ class DumpRecorder
             return new CliDumper();
         }
 
-        if (in_array(PHP_SAPI, ['cli', 'phpdbg'])) {
+        if (in_array(PHP_SAPI, ['cli', 'phpdbg']) && ! isset($_SERVER['LARAVEL_OCTANE'])) {
             return new CliDumper() ;
         }
 

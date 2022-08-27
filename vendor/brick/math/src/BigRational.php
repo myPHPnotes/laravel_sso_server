@@ -20,17 +20,13 @@ final class BigRational extends BigNumber
 {
     /**
      * The numerator.
-     *
-     * @var BigInteger
      */
-    private $numerator;
+    private BigInteger $numerator;
 
     /**
      * The denominator. Always strictly positive.
-     *
-     * @var BigInteger
      */
-    private $denominator;
+    private BigInteger $denominator;
 
     /**
      * Protected constructor. Use a factory method to obtain an instance.
@@ -433,7 +429,8 @@ final class BigRational extends BigNumber
      */
     public function toFloat() : float
     {
-        return $this->numerator->toFloat() / $this->denominator->toFloat();
+        $simplified = $this->simplified();
+        return $simplified->numerator->toFloat() / $simplified->denominator->toFloat();
     }
 
     /**
@@ -449,6 +446,40 @@ final class BigRational extends BigNumber
         }
 
         return $this->numerator . '/' . $this->denominator;
+    }
+
+    /**
+     * This method is required for serializing the object and SHOULD NOT be accessed directly.
+     *
+     * @internal
+     *
+     * @return array{numerator: BigInteger, denominator: BigInteger}
+     */
+    public function __serialize(): array
+    {
+        return ['numerator' => $this->numerator, 'denominator' => $this->denominator];
+    }
+
+    /**
+     * This method is only here to allow unserializing the object and cannot be accessed directly.
+     *
+     * @internal
+     * @psalm-suppress RedundantPropertyInitializationCheck
+     *
+     * @param array{numerator: BigInteger, denominator: BigInteger} $data
+     *
+     * @return void
+     *
+     * @throws \LogicException
+     */
+    public function __unserialize(array $data): void
+    {
+        if (isset($this->numerator)) {
+            throw new \LogicException('__unserialize() is an internal function, it must not be called directly.');
+        }
+
+        $this->numerator = $data['numerator'];
+        $this->denominator = $data['denominator'];
     }
 
     /**
