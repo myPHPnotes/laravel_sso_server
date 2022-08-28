@@ -93,7 +93,7 @@
                                     @csrf
 
                                     <input type="hidden" name="current_url" value="{{ $request->fullUrl() }}">
-                                    <button type="submit" class="btn btn-success btn-block" style="width: auto;">Not {{ auth()->user()->name}}? Loginh  </button>
+                                    <button type="submit" class="btn btn-success btn-block" style="width: auto;">Not {{ auth()->user()->name}}? Login Again?</button>
                                 </form>
                             </div>
                         </div>

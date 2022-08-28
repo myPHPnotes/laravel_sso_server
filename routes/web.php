@@ -21,3 +21,4 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::post('/different-account', [App\Http\Controllers\HomeController::class, 'differentAccount'])->name('different-account');
+Route::get('/reset-auth', [App\Http\Controllers\HomeController::class, 'resetAuth'])->name('reset-auth');
