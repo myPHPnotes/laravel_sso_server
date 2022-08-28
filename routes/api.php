@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,4 +17,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:api', 'scope:view-user')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::middleware('auth:api')->get('/logout', function (Request $request) {
+    $user = Auth::user()->token();
+    $user->revoke();
+    Session::flush();
+    return Auth::logout();
 });

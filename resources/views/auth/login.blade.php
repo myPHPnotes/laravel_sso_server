@@ -8,6 +8,7 @@
                 <div class="card-header">{{ __('Login') }}</div>
 
                 <div class="card-body">
+                    @php dump(session()->all()) @endphp
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 
